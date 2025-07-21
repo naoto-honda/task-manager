@@ -527,6 +527,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
       </div>
     );
   }
+
+  // どの分岐にも該当しない場合はnullを返す
+  return null;
 };
 
 export default Dashboard;
