@@ -1,70 +1,106 @@
-# Getting Started with Create React App
+# タスク管理アプリ（task-manager）
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 概要
 
-## Available Scripts
+このプロジェクトは、React + TypeScript + Firebase を用いたタスク管理アプリです。ユーザーはタスクの登録・編集・削除・検索・完了管理ができ、月別・タグ別・カテゴリ別のタスク一覧や統計情報も閲覧できます。認証・データ管理には Firebase（Authentication, Firestore）を利用し、Vercel でデプロイ可能です。
 
-In the project directory, you can run:
+## 主な機能
 
-### `npm start`
+- メールアドレス/パスワードによるユーザー認証（Firebase Auth）
+- タスクの新規作成・編集・削除
+- タスクの完了/未完了切り替え
+- タスクの優先度・期限・説明・タグ・カテゴリ管理
+- 今日のタスク、全タスクの一覧表示
+- 月別・タグ別・カテゴリ別のタスク一覧
+- タスク検索機能
+- 統計カードによる進捗・件数表示
+- レスポンシブな UI（Tailwind CSS）
+- ログイン・ログアウト・新規登録
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 技術スタック
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- フロントエンド: React 19, TypeScript 4.9, React Router DOM 7
+- スタイリング: Tailwind CSS 3, PostCSS, Autoprefixer
+- バックエンド/BaaS: Firebase (Authentication, Cloud Firestore)
+- デプロイ: Vercel
+- その他: ESLint, Prettier
 
-### `npm test`
+## セットアップ手順
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. **リポジトリのクローン**
 
-### `npm run build`
+```bash
+git clone git@github.com:naoto-honda/task-manager.git
+cd task-manager
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. **依存パッケージのインストール**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. **Firebase 設定**
 
-### `npm run eject`
+- `src/firebase.ts` の `firebaseConfig` をご自身の Firebase プロジェクトの値に書き換えてください。
+- Firebase コンソールで Authentication（メール/パスワード）と Firestore Database を有効化してください。
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+4. **開発サーバーの起動**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+npm start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+5. **ビルド**
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+npm run build
+```
 
-## Learn More
+## Firebase 連携方法
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Firebase プロジェクトを作成し、Web アプリを追加して構成情報（apiKey 等）を取得します。
+- Firestore のセキュリティルールは開発中は緩めに設定されていますが、本番運用時は必ず適切なルールに変更してください。
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+例：
 
-### Code Splitting
+```
+match /databases/{database}/documents {
+  match /{document=**} {
+    allow read, write: if request.auth != null;
+  }
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Vercel へのデプロイ
 
-### Analyzing the Bundle Size
+1. [Vercel](https://vercel.com/) にサインアップし、GitHub リポジトリと連携します。
+2. プロジェクトをインポートし、ビルドコマンドは `npm run build`、出力ディレクトリは `build` を指定してください。
+3. TypeScript のバージョンは `4.9.5` で固定してください（`package.json` 参照）。
+4. Firebase の環境変数は Vercel の「Environment Variables」機能で設定できます。
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## ディレクトリ構成
 
-### Making a Progressive Web App
+```
+├── src/
+│   ├── components/      # 共通UIコンポーネント
+│   ├── pages/           # 各ページ（Login, Dashboard, MonthTasks, TagTasks, CategoryTasks）
+│   ├── utils/           # ユーティリティ関数
+│   ├── firebase.ts      # Firebase初期化
+│   ├── App.tsx          # ルーティング・認証管理
+│   └── index.tsx        # エントリポイント
+├── public/
+├── package.json
+├── tailwind.config.js
+├── tsconfig.json
+└── README.md
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 注意事項
 
-### Advanced Configuration
+- 本アプリは学習・個人利用を想定しています。商用利用時はセキュリティやパフォーマンスに十分ご注意ください。
+- Firebase の無料枠には制限があります。
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## ライセンス
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT License
